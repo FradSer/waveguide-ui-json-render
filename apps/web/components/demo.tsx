@@ -14,13 +14,14 @@ import { toast } from "sonner";
 import { CodeBlock } from "./code-block";
 import { CopyButton } from "./copy-button";
 import { Toaster } from "./ui/sonner";
+import { WaveguideViewport } from "./waveguide-viewport";
 import {
   demoRegistry,
   fallbackComponent,
   useInteractiveState,
 } from "./demo/index";
 
-const SIMULATION_PROMPT = "Create a contact form with name, email, and message";
+const SIMULATION_PROMPT = "Create a login form";
 
 interface SimulationStage {
   tree: UITree;
@@ -30,127 +31,62 @@ interface SimulationStage {
 const SIMULATION_STAGES: SimulationStage[] = [
   {
     tree: {
-      root: "card",
+      root: "login",
       elements: {
-        card: {
-          key: "card",
+        login: {
+          key: "login",
           type: "Card",
-          props: { title: "Contact Us", maxWidth: "md" },
+          props: { title: "Sign In" },
           children: [],
         },
       },
     },
-    stream: '{"op":"set","path":"/root","value":"card"}',
+    stream: '{"op":"set","path":"/root","value":"login"}',
   },
   {
     tree: {
-      root: "card",
+      root: "login",
       elements: {
-        card: {
-          key: "card",
+        login: {
+          key: "login",
           type: "Card",
-          props: { title: "Contact Us", maxWidth: "md" },
-          children: ["name"],
-        },
-        name: {
-          key: "name",
-          type: "Input",
-          props: { label: "Name", name: "name" },
-        },
-      },
-    },
-    stream:
-      '{"op":"add","path":"/elements/card","value":{"key":"card","type":"Card","props":{"title":"Contact Us","maxWidth":"md"},"children":["name"]}}',
-  },
-  {
-    tree: {
-      root: "card",
-      elements: {
-        card: {
-          key: "card",
-          type: "Card",
-          props: { title: "Contact Us", maxWidth: "md" },
-          children: ["name", "email"],
-        },
-        name: {
-          key: "name",
-          type: "Input",
-          props: { label: "Name", name: "name" },
+          props: { title: "Sign In" },
+          children: ["email"],
         },
         email: {
           key: "email",
           type: "Input",
-          props: { label: "Email", name: "email" },
+          props: { label: "Email", name: "email", type: "email" },
         },
       },
     },
     stream:
-      '{"op":"add","path":"/elements/email","value":{"key":"email","type":"Input","props":{"label":"Email","name":"email"}}}',
+      '{"op":"add","path":"/elements/login","value":{"key":"login","type":"Card","props":{"title":"Sign In"},"children":["email"]}}',
   },
   {
     tree: {
-      root: "card",
+      root: "login",
       elements: {
-        card: {
-          key: "card",
+        login: {
+          key: "login",
           type: "Card",
-          props: { title: "Contact Us", maxWidth: "md" },
-          children: ["name", "email", "message"],
-        },
-        name: {
-          key: "name",
-          type: "Input",
-          props: { label: "Name", name: "name" },
+          props: { title: "Sign In" },
+          children: ["email", "submit"],
         },
         email: {
           key: "email",
           type: "Input",
-          props: { label: "Email", name: "email" },
-        },
-        message: {
-          key: "message",
-          type: "Textarea",
-          props: { label: "Message", name: "message" },
-        },
-      },
-    },
-    stream:
-      '{"op":"add","path":"/elements/message","value":{"key":"message","type":"Textarea","props":{"label":"Message","name":"message"}}}',
-  },
-  {
-    tree: {
-      root: "card",
-      elements: {
-        card: {
-          key: "card",
-          type: "Card",
-          props: { title: "Contact Us", maxWidth: "md" },
-          children: ["name", "email", "message", "submit"],
-        },
-        name: {
-          key: "name",
-          type: "Input",
-          props: { label: "Name", name: "name" },
-        },
-        email: {
-          key: "email",
-          type: "Input",
-          props: { label: "Email", name: "email" },
-        },
-        message: {
-          key: "message",
-          type: "Textarea",
-          props: { label: "Message", name: "message" },
+          props: { label: "Email", name: "email", type: "email" },
         },
         submit: {
           key: "submit",
           type: "Button",
-          props: { label: "Send Message", variant: "primary" },
+          props: { label: "Sign In", variant: "primary" },
         },
       },
     },
     stream:
-      '{"op":"add","path":"/elements/submit","value":{"key":"submit","type":"Button","props":{"label":"Send Message","variant":"primary"}}}',
+      '{"op":"add","path":"/elements/submit","value":{"key":"submit","type":"Button","props":{"label":"Sign In","variant":"primary"}}}',
   },
 ];
 
@@ -1006,9 +942,9 @@ Open [http://localhost:3000](http://localhost:3000) to view.
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-4">
+      <div className="flex flex-col lg:flex-row gap-4">
         {/* Tabbed code/stream/json panel */}
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-center gap-4 mb-2 h-6">
             {(["json", "stream"] as const).map((tab) => (
               <button
@@ -1024,7 +960,7 @@ Open [http://localhost:3000](http://localhost:3000) to view.
               </button>
             ))}
           </div>
-          <div className="border border-border rounded bg-background font-mono text-xs h-96 text-left grid relative group">
+          <div className="border border-border rounded bg-background font-mono text-xs h-96 text-left relative group overflow-hidden">
             <div className="absolute top-2 right-2 z-10">
               <CopyButton
                 text={
@@ -1072,7 +1008,7 @@ Open [http://localhost:3000](http://localhost:3000) to view.
         </div>
 
         {/* Rendered output using json-render */}
-        <div className="min-w-0">
+        <div className="min-w-0 lg:w-fit lg:flex-shrink-0 lg:flex-grow-0">
           <div className="flex items-center justify-between mb-2 h-6">
             <div className="flex items-center gap-4">
               {(
@@ -1126,7 +1062,7 @@ Open [http://localhost:3000](http://localhost:3000) to view.
               </button>
             </div>
           </div>
-          <div className="border border-border rounded bg-background h-96 grid relative group">
+          <div className="flex items-center justify-center p-2 bg-gradient-to-br from-neutral-900 to-neutral-950 rounded overflow-auto relative min-w-0 w-fit">
             {renderView === "static" && (
               <div className="absolute top-2 right-2 z-10">
                 <CopyButton
@@ -1136,40 +1072,38 @@ Open [http://localhost:3000](http://localhost:3000) to view.
               </div>
             )}
             {renderView === "dynamic" ? (
-              <div className="overflow-auto">
+              <WaveguideViewport>
                 {currentTree && currentTree.root ? (
-                  <div className="animate-in fade-in duration-200 w-full min-h-full flex items-center justify-center p-3 py-4">
-                    <JSONUIProvider
+                  <JSONUIProvider
+                    registry={
+                      demoRegistry as Parameters<
+                        typeof JSONUIProvider
+                      >[0]["registry"]
+                    }
+                  >
+                    <Renderer
+                      tree={currentTree}
                       registry={
                         demoRegistry as Parameters<
-                          typeof JSONUIProvider
+                          typeof Renderer
                         >[0]["registry"]
                       }
-                    >
-                      <Renderer
-                        tree={currentTree}
-                        registry={
-                          demoRegistry as Parameters<
-                            typeof Renderer
-                          >[0]["registry"]
-                        }
-                        loading={isStreaming || isStreamingSimulation}
-                        fallback={
-                          fallbackComponent as Parameters<
-                            typeof Renderer
-                          >[0]["fallback"]
-                        }
-                      />
-                    </JSONUIProvider>
-                  </div>
+                      loading={isStreaming || isStreamingSimulation}
+                      fallback={
+                        fallbackComponent as Parameters<
+                          typeof Renderer
+                        >[0]["fallback"]
+                      }
+                    />
+                  </JSONUIProvider>
                 ) : (
-                  <div className="h-full flex items-center justify-center text-muted-foreground/50 text-sm">
+                  <div className="h-full flex items-center justify-center text-muted-foreground/50 text-xs">
                     {isStreaming ? "generating..." : "waiting..."}
                   </div>
                 )}
-              </div>
+              </WaveguideViewport>
             ) : (
-              <div className="overflow-auto h-full font-mono text-xs text-left">
+              <div className="w-full h-96 overflow-auto font-mono text-xs text-left">
                 <CodeBlock
                   code={generatedCode}
                   lang="tsx"
@@ -1208,9 +1142,9 @@ Open [http://localhost:3000](http://localhost:3000) to view.
               </svg>
             </button>
           </div>
-          <div className="flex-1 overflow-auto p-6">
+          <div className="flex-1 overflow-auto p-6 flex items-center justify-center bg-gradient-to-br from-neutral-900 to-neutral-950">
             {currentTree && currentTree.root ? (
-              <div className="w-full min-h-full flex items-center justify-center">
+              <WaveguideViewport>
                 <JSONUIProvider
                   registry={
                     demoRegistry as Parameters<
@@ -1231,7 +1165,7 @@ Open [http://localhost:3000](http://localhost:3000) to view.
                     }
                   />
                 </JSONUIProvider>
-              </div>
+              </WaveguideViewport>
             ) : (
               <div className="h-full flex items-center justify-center text-muted-foreground/50 text-sm">
                 {isStreaming ? "generating..." : "waiting..."}
