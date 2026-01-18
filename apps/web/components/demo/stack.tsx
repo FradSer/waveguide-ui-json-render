@@ -8,11 +8,11 @@ export function Stack({ element, children }: ComponentRenderProps) {
   const customClass = getCustomClass(props);
   const isHorizontal = props.direction === "horizontal";
   const stackGap =
-    props.gap === "lg" ? "gap-3" : props.gap === "sm" ? "gap-1" : "gap-2";
+    props.gap === "lg" ? "gap-2" : props.gap === "sm" ? "gap-0.5" : "gap-1";
 
   return (
     <div
-      className={`flex ${isHorizontal ? "flex-row flex-wrap items-center" : "flex-col"} ${stackGap} ${baseClass} ${customClass}`}
+      className={`flex ${isHorizontal ? "flex-row flex-wrap items-center" : "flex-col"} ${stackGap} w-full h-full ${baseClass} ${customClass}`}
     >
       {children}
     </div>

@@ -9,13 +9,15 @@ export function Text({ element }: ComponentRenderProps) {
   const textVariant = props.variant as string;
   const textClass =
     textVariant === "caption"
-      ? "text-[10px]"
+      ? "text-[9px]"
       : textVariant === "muted"
-        ? "text-xs text-muted-foreground"
-        : "text-xs";
+        ? "text-[10px] text-[#00AA44]"
+        : "text-[10px]";
 
   return (
-    <p className={`${textClass} text-left ${baseClass} ${customClass}`}>
+    <p
+      className={`${textClass} text-left text-[#00FF66] ${baseClass} ${customClass}`}
+    >
       {props.content as string}
     </p>
   );

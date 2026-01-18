@@ -11,10 +11,10 @@ export function Button({ element }: ComponentRenderProps) {
   const actionText = (props.actionText as string) || label;
   const btnClass =
     variant === "danger"
-      ? "bg-red-500 text-white"
+      ? "bg-[#00AA44]/20 border border-[#00AA44] text-[#00FF66]"
       : variant === "secondary"
-        ? "bg-card border border-border text-foreground"
-        : "bg-foreground text-background";
+        ? "bg-black border border-[#00FF66] text-[#00FF66]"
+        : "bg-[#00FF66] text-black";
 
   return (
     <button
@@ -24,7 +24,7 @@ export function Button({ element }: ComponentRenderProps) {
           window as unknown as { __demoAction?: (text: string) => void }
         ).__demoAction?.(actionText)
       }
-      className={`self-start px-3 py-1.5 rounded text-xs font-medium hover:opacity-90 transition-opacity ${btnClass} ${baseClass} ${customClass}`}
+      className={`self-start px-2 py-1 rounded text-[10px] font-medium hover:opacity-90 hover:waveguide-glow-intense transition-all ${btnClass} ${baseClass} ${customClass}`}
     >
       {label}
     </button>

@@ -17,7 +17,9 @@ export function Heading({ element }: ComponentRenderProps) {
           : "text-sm font-semibold";
 
   return (
-    <div className={`${headingClass} text-left ${baseClass} ${customClass}`}>
+    <div
+      className={`${headingClass} text-left waveguide-glow text-[#00FF66] ${baseClass} ${customClass}`}
+    >
       {props.text as string}
     </div>
   );

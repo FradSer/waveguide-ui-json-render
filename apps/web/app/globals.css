@@ -5,49 +5,49 @@
 
 :root {
   --radius: 0.5rem;
-  /* Monochrome light theme */
-  --background: oklch(1.0 0 0);
-  --foreground: oklch(0.1 0 0);
-  --card: oklch(0.98 0 0);
-  --card-foreground: oklch(0.1 0 0);
-  --popover: oklch(0.98 0 0);
-  --popover-foreground: oklch(0.1 0 0);
-  --primary: oklch(0.1 0 0);
-  --primary-foreground: oklch(1.0 0 0);
-  --secondary: oklch(0.92 0 0);
-  --secondary-foreground: oklch(0.1 0 0);
-  --muted: oklch(0.92 0 0);
-  --muted-foreground: oklch(0.45 0 0);
-  --accent: oklch(0.92 0 0);
-  --accent-foreground: oklch(0.1 0 0);
-  --destructive: oklch(0.55 0.2 25);
-  --destructive-foreground: oklch(1.0 0 0);
-  --border: oklch(0.85 0 0);
-  --input: oklch(0.85 0 0);
-  --ring: oklch(0.6 0 0);
+  /* Pure green and black for AR waveguide display */
+  --background: #000000;
+  --foreground: #00FF66;
+  --card: #000000;
+  --card-foreground: #00FF66;
+  --popover: #000000;
+  --popover-foreground: #00FF66;
+  --primary: #00FF66;
+  --primary-foreground: #000000;
+  --secondary: #000000;
+  --secondary-foreground: #00FF66;
+  --muted: #003318;
+  --muted-foreground: #00AA44;
+  --accent: #00FF66;
+  --accent-foreground: #000000;
+  --destructive: #00AA44;
+  --destructive-foreground: #00FF66;
+  --border: #00FF66;
+  --input: #00FF66;
+  --ring: #00FF66;
 }
 
 .dark {
-  /* Monochrome dark theme */
-  --background: oklch(0.0 0 0);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.08 0 0);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.08 0 0);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.98 0 0);
-  --primary-foreground: oklch(0.0 0 0);
-  --secondary: oklch(0.15 0 0);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.15 0 0);
-  --muted-foreground: oklch(0.6 0 0);
-  --accent: oklch(0.15 0 0);
-  --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.65 0.2 25);
-  --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.25 0 0);
-  --input: oklch(0.25 0 0);
-  --ring: oklch(0.4 0 0);
+  /* Same as root for consistency */
+  --background: #000000;
+  --foreground: #00FF66;
+  --card: #000000;
+  --card-foreground: #00FF66;
+  --popover: #000000;
+  --popover-foreground: #00FF66;
+  --primary: #00FF66;
+  --primary-foreground: #000000;
+  --secondary: #000000;
+  --secondary-foreground: #00FF66;
+  --muted: #003318;
+  --muted-foreground: #00AA44;
+  --accent: #00FF66;
+  --accent-foreground: #000000;
+  --destructive: #00AA44;
+  --destructive-foreground: #00FF66;
+  --border: #00FF66;
+  --input: #00FF66;
+  --ring: #00FF66;
 }
 
 @theme inline {
@@ -84,7 +84,7 @@
   
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: var(--font-geist-sans), system-ui, sans-serif;
+    font-family: var(--font-zpix), monospace;
   }
 
   ::selection {
@@ -121,6 +121,15 @@
 
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-muted-foreground;
+  }
+
+  /* Waveguide glow effects */
+  .waveguide-glow {
+    text-shadow: 0 0 2px currentColor, 0 0 6px rgba(0, 255, 102, 0.4);
+  }
+
+  .waveguide-glow-intense {
+    text-shadow: 0 0 2px currentColor, 0 0 8px rgba(0, 255, 102, 0.6);
   }
 }
 

@@ -9,16 +9,16 @@ export function Badge({ element }: ComponentRenderProps) {
   const badgeVariant = props.variant as string;
   const badgeClass =
     badgeVariant === "success"
-      ? "bg-green-100 text-green-800"
+      ? "bg-[#00FF66]/20 text-[#00FF66] border border-[#00FF66]/50"
       : badgeVariant === "warning"
-        ? "bg-yellow-100 text-yellow-800"
+        ? "bg-[#00AA44]/20 text-[#00AA44] border border-[#00AA44]/50"
         : badgeVariant === "danger"
-          ? "bg-red-100 text-red-800"
-          : "bg-muted text-foreground";
+          ? "bg-[#00AA44]/20 text-[#00AA44] border border-[#00AA44]/50"
+          : "bg-black text-[#00FF66] border border-[#00FF66]";
 
   return (
     <span
-      className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${badgeClass} ${baseClass} ${customClass}`}
+      className={`px-1.5 py-0.5 rounded text-[9px] font-medium ${badgeClass} ${baseClass} ${customClass}`}
     >
       {props.text as string}
     </span>

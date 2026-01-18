@@ -13,24 +13,25 @@ export function Card({ element, children }: ComponentRenderProps) {
         ? "max-w-sm sm:min-w-[320px]"
         : props.maxWidth === "lg"
           ? "max-w-md sm:min-w-[360px]"
-          : "w-full";
-  const centeredClass = props.centered ? "mx-auto" : "";
+          : "w-full h-full";
+
+  const isFullWidth = !props.maxWidth || props.maxWidth === "full";
 
   return (
     <div
-      className={`border border-border rounded-lg p-3 bg-background overflow-hidden ${maxWidthClass} ${centeredClass} ${baseClass} ${customClass}`}
+      className={`${isFullWidth ? "" : "border border-border rounded-lg"} p-2 bg-black overflow-hidden ${maxWidthClass} ${baseClass} ${customClass}`}
     >
       {props.title ? (
-        <div className="font-semibold text-sm mb-1 text-left">
+        <div className="font-semibold text-xs mb-1 text-left waveguide-glow text-[#00FF66]">
           {props.title as string}
         </div>
       ) : null}
       {props.description ? (
-        <div className="text-[10px] text-muted-foreground mb-2 text-left">
+        <div className="text-[9px] text-[#00AA44] mb-1 text-left">
           {props.description as string}
         </div>
       ) : null}
-      <div className="space-y-2">{children}</div>
+      <div className="space-y-1">{children}</div>
     </div>
   );
 }

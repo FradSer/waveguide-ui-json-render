@@ -55,29 +55,18 @@ import { Text } from "./text";
 import { Textarea } from "./textarea";
 
 export const demoRegistry: ComponentRegistry = {
-  Alert,
-  Avatar,
+  // Waveguide-compatible components only (540x180 display)
   Badge,
-  BarGraph,
   Button,
   Card,
-  Checkbox,
   Divider,
-  Form,
-  Grid,
   Heading,
-  Image,
   Input,
-  LineGraph,
-  Link,
   Progress,
-  Radio,
-  Rating,
-  Select,
   Stack,
-  Switch,
   Text,
-  Textarea,
+  // Excluded for waveguide: Grid, Image, Avatar, Rating, BarGraph, LineGraph,
+  // Textarea, Select, Checkbox, Radio, Switch, Alert, Link
 };
 
 export const fallbackComponent = Fallback;

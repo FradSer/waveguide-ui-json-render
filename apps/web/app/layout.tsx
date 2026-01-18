@@ -15,6 +15,11 @@ const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
 });
+const zpix = localFont({
+  src: "../public/zpix.ttf",
+  variable: "--font-zpix",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://json-render.dev"),
@@ -75,7 +80,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${zpix.variable}`}
+      >
         <ThemeProvider>
           <div className="min-h-screen flex flex-col">
             <Header />
