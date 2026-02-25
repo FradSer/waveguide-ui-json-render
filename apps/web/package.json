@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@ai-sdk/gateway": "^3.0.55",
+    "@ai-sdk/google-vertex": "^4.0.63",
     "@json-render/codegen": "workspace:*",
     "@json-render/core": "workspace:*",
     "@json-render/react": "workspace:*",

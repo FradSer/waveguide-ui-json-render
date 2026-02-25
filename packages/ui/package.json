@@ -21,7 +21,7 @@
     "typescript": "5.9.3"
   },
   "dependencies": {
-    "@ai-sdk/gateway": "^3.0.55",
+    "@ai-sdk/google-vertex": "^4.0.63",
     "ai": "^6.0.99",
     "react": "19.2.4",
     "react-dom": "19.2.4"
