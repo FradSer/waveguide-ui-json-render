@@ -3,8 +3,7 @@
 import { useState } from "react";
 
 // Shared animation class
-export const baseClass =
-  "animate-in fade-in slide-in-from-bottom-1 duration-200";
+export const baseClass = "animate-in slide-in-from-bottom-1 duration-200";
 
 // Helper to get custom classes
 export function getCustomClass(props: Record<string, unknown>): string {

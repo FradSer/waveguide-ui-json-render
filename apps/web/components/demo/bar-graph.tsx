@@ -18,22 +18,24 @@ export function BarGraph({ element }: ComponentRenderProps) {
   return (
     <div className={`${baseClass} ${customClass}`}>
       {title ? (
-        <div className="text-xs font-medium mb-2 text-left">{title}</div>
+        <div className="text-xs font-medium mb-2 text-left text-[#00FF66]">
+          {title}
+        </div>
       ) : null}
       <div className="flex gap-1">
         {data.map((d, i) => (
           <div key={i} className="flex-1 flex flex-col items-center gap-1">
-            <div className="text-[8px] text-muted-foreground">{d.value}</div>
+            <div className="text-[8px] text-[#00AA44]">{d.value}</div>
             <div className="w-full h-20 flex items-end">
               <div
-                className="w-full bg-foreground/80 rounded-t transition-all"
+                className="w-full bg-[#00FF66] rounded-t transition-all"
                 style={{
                   height: `${(d.value / maxValue) * 100}%`,
                   minHeight: 2,
                 }}
               />
             </div>
-            <div className="text-[8px] text-muted-foreground truncate w-full text-center">
+            <div className="text-[8px] text-[#00AA44] truncate w-full text-center">
               {d.label}
             </div>
           </div>

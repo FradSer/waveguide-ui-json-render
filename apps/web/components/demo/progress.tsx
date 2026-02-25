@@ -11,13 +11,13 @@ export function Progress({ element }: ComponentRenderProps) {
   return (
     <div className={`${baseClass} ${customClass}`}>
       {props.label ? (
-        <div className="text-[9px] text-muted-foreground mb-1 text-left">
+        <div className="text-[9px] text-[#00AA44] mb-1 text-left">
           {props.label as string}
         </div>
       ) : null}
-      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+      <div className="h-1.5 bg-black rounded-full overflow-hidden border border-[#00FF66]">
         <div
-          className="h-full bg-primary rounded-full transition-all waveguide-glow"
+          className="h-full bg-[#00FF66] rounded-none transition-all waveguide-glow"
           style={{ width: `${value}%` }}
         />
       </div>

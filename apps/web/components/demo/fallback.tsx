@@ -6,9 +6,7 @@ import { baseClass, getCustomClass } from "./utils";
 export function Fallback({ element }: ComponentRenderProps) {
   const customClass = getCustomClass(element.props);
   return (
-    <div
-      className={`text-[10px] text-muted-foreground ${baseClass} ${customClass}`}
-    >
+    <div className={`text-[10px] text-[#00AA44] ${baseClass} ${customClass}`}>
       [{element.type}]
     </div>
   );

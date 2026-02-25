@@ -11,15 +11,15 @@ export function Checkbox({ element }: ComponentRenderProps) {
 
   return (
     <label
-      className={`flex items-center gap-2 text-xs cursor-pointer ${baseClass} ${customClass}`}
+      className={`flex items-center gap-2 text-xs cursor-pointer text-[#00FF66] ${baseClass} ${customClass}`}
       onClick={() => setChecked((prev) => !prev)}
     >
       <div
-        className={`w-3.5 h-3.5 border border-border rounded-sm flex items-center justify-center transition-colors ${checked ? "bg-foreground" : "bg-background"}`}
+        className={`w-3.5 h-3.5 border border-[#00FF66] rounded-sm flex items-center justify-center transition-colors ${checked ? "bg-[#00FF66]" : "bg-black"}`}
       >
         {checked && (
           <svg
-            className="w-2.5 h-2.5 text-background"
+            className="w-2.5 h-2.5 text-black"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

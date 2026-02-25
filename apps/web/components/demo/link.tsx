@@ -9,7 +9,7 @@ export function Link({ element }: ComponentRenderProps) {
 
   return (
     <span
-      className={`text-xs text-muted-foreground hover:text-foreground cursor-pointer transition-colors underline-offset-2 hover:underline ${baseClass} ${customClass}`}
+      className={`text-xs text-[#00FF66] hover:text-[#00AA44] cursor-pointer transition-colors underline-offset-2 hover:underline ${baseClass} ${customClass}`}
     >
       {props.label as string}
     </span>

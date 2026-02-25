@@ -22,7 +22,7 @@ export function Avatar({ element }: ComponentRenderProps) {
 
   return (
     <div
-      className={`${avatarSize} rounded-full bg-muted flex items-center justify-center font-medium ${baseClass} ${customClass}`}
+      className={`${avatarSize} rounded-full bg-black border border-[#00FF66] text-[#00FF66] flex items-center justify-center font-medium ${baseClass} ${customClass}`}
     >
       {initials}
     </div>

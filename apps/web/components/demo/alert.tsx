@@ -9,12 +9,12 @@ export function Alert({ element }: ComponentRenderProps) {
   const alertType = props.type as string;
   const alertClass =
     alertType === "success"
-      ? "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-900 dark:text-green-100"
+      ? "bg-black border-[#00FF66] text-[#00FF66]"
       : alertType === "warning"
-        ? "bg-yellow-50 dark:bg-yellow-950 border-yellow-200 dark:border-yellow-800 text-yellow-900 dark:text-yellow-100"
+        ? "bg-black border-[#00FF66] text-[#00FF66] border-dashed"
         : alertType === "error"
-          ? "bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800 text-red-900 dark:text-red-100"
-          : "bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-100";
+          ? "bg-black border-[#00FF66] text-[#00FF66] border-dotted"
+          : "bg-black border-[#00FF66] text-[#00FF66]";
 
   return (
     <div
@@ -22,7 +22,9 @@ export function Alert({ element }: ComponentRenderProps) {
     >
       <div className="text-xs font-medium">{props.title as string}</div>
       {props.message ? (
-        <div className="text-[10px] mt-0.5">{props.message as string}</div>
+        <div className="text-[10px] mt-0.5 text-[#00AA44]">
+          {props.message as string}
+        </div>
       ) : null}
     </div>
   );

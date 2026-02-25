@@ -19,7 +19,7 @@ export function Card({ element, children }: ComponentRenderProps) {
 
   return (
     <div
-      className={`${isFullWidth ? "" : "border border-border rounded-lg"} p-2 bg-black overflow-hidden ${maxWidthClass} ${baseClass} ${customClass}`}
+      className={`${isFullWidth ? "" : "border border-[#00FF66] rounded-lg"} p-2 bg-black overflow-hidden ${maxWidthClass} ${baseClass} ${customClass}`}
     >
       {props.title ? (
         <div className="font-semibold text-xs mb-1 text-left waveguide-glow text-[#00FF66]">

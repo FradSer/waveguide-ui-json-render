@@ -42,7 +42,9 @@ export function LineGraph({ element }: ComponentRenderProps) {
   return (
     <div className={`${baseClass} ${customClass}`}>
       {title ? (
-        <div className="text-xs font-medium mb-2 text-left">{title}</div>
+        <div className="text-xs font-medium mb-2 text-left text-[#00FF66]">
+          {title}
+        </div>
       ) : null}
       <div className="relative h-24">
         <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full">
@@ -52,8 +54,7 @@ export function LineGraph({ element }: ComponentRenderProps) {
             y1={padding.top + chartHeight / 2}
             x2={width - padding.right}
             y2={padding.top + chartHeight / 2}
-            stroke="currentColor"
-            strokeOpacity="0.1"
+            stroke="#003318"
             strokeWidth="1"
           />
           <line
@@ -61,8 +62,7 @@ export function LineGraph({ element }: ComponentRenderProps) {
             y1={padding.top}
             x2={width - padding.right}
             y2={padding.top}
-            stroke="currentColor"
-            strokeOpacity="0.1"
+            stroke="#003318"
             strokeWidth="1"
           />
           <line
@@ -70,8 +70,7 @@ export function LineGraph({ element }: ComponentRenderProps) {
             y1={height - padding.bottom}
             x2={width - padding.right}
             y2={height - padding.bottom}
-            stroke="currentColor"
-            strokeOpacity="0.1"
+            stroke="#003318"
             strokeWidth="1"
           />
           {/* Line */}
@@ -79,11 +78,11 @@ export function LineGraph({ element }: ComponentRenderProps) {
             <path
               d={pathD}
               fill="none"
-              stroke="currentColor"
+              stroke="#00FF66"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="text-foreground/80"
+              className=""
             />
           )}
           {/* Points */}
@@ -93,7 +92,7 @@ export function LineGraph({ element }: ComponentRenderProps) {
               cx={p.x}
               cy={p.y}
               r="4"
-              className="fill-foreground"
+              className="fill-[#00FF66]"
             />
           ))}
         </svg>
@@ -103,7 +102,7 @@ export function LineGraph({ element }: ComponentRenderProps) {
           {data.map((d, i) => (
             <div
               key={i}
-              className="text-[8px] text-muted-foreground text-center"
+              className="text-[8px] text-[#00AA44] text-center"
               style={{ width: `${100 / data.length}%` }}
             >
               {d.label}

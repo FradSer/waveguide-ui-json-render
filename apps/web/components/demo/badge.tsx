@@ -9,11 +9,11 @@ export function Badge({ element }: ComponentRenderProps) {
   const badgeVariant = props.variant as string;
   const badgeClass =
     badgeVariant === "success"
-      ? "bg-[#00FF66]/20 text-[#00FF66] border border-[#00FF66]/50"
+      ? "bg-black text-[#00FF66] border border-[#00FF66]"
       : badgeVariant === "warning"
-        ? "bg-[#00AA44]/20 text-[#00AA44] border border-[#00AA44]/50"
+        ? "bg-black text-[#00FF66] border border-[#00FF66] border-dashed"
         : badgeVariant === "danger"
-          ? "bg-[#00AA44]/20 text-[#00AA44] border border-[#00AA44]/50"
+          ? "bg-black text-[#00FF66] border border-[#00FF66] border-dotted"
           : "bg-black text-[#00FF66] border border-[#00FF66]";
 
   return (

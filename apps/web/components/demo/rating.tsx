@@ -12,7 +12,7 @@ export function Rating({ element }: ComponentRenderProps) {
   return (
     <div className={`${baseClass} ${customClass}`}>
       {props.label ? (
-        <div className="text-[10px] text-muted-foreground mb-1 text-left">
+        <div className="text-[10px] text-[#00AA44] mb-1 text-left">
           {props.label as string}
         </div>
       ) : null}
@@ -20,7 +20,7 @@ export function Rating({ element }: ComponentRenderProps) {
         {Array.from({ length: maxRating }).map((_, i) => (
           <span
             key={i}
-            className={`text-sm ${i < ratingValue ? "text-yellow-400" : "text-muted"}`}
+            className={`text-sm ${i < ratingValue ? "text-[#00FF66]" : "text-[#003318]"}`}
           >
             *
           </span>

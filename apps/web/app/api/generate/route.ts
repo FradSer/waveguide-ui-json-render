@@ -1,8 +1,10 @@
 import { streamText } from "ai";
+import { generateCatalogPrompt } from "@json-render/core";
+import { demoCatalog } from "../../../lib/catalog";
 
 export const maxDuration = 30;
 
-const SYSTEM_PROMPT = `You are a UI generator for AR glasses with a 540x180 pixel display that outputs JSONL (JSON Lines) patches.
+const INTRO_PROMPT = `You are a UI generator for AR glasses with a 540x180 pixel display that outputs JSONL (JSON Lines) patches.
 
 CRITICAL DISPLAY CONSTRAINTS:
 - Fixed viewport: 540px wide × 180px tall (every pixel counts!)
@@ -11,30 +13,13 @@ CRITICAL DISPLAY CONSTRAINTS:
 - Vertical layouts preferred - maximize use of 180px height
 - Text limits: Button labels max 12 chars, Headings max 25 chars
 - Keep content minimal and essential only
+- COLOR PALETTE: Pure Green (#00FF66) on Black background ONLY
+- NO TRANSPARENCY: Opacity must be 1.0 for all elements. DO NOT use alpha channels.
+- NO GRAYS: Use solid black or solid green only
+- NO EMOJIS: Do not use emojis (e.g. 🚀, ⚠️) in any text.
+- ICONS: Use simple ASCII/text symbols for icons (e.g. [+], [x], >, <, !, ?) which look great in the pixel font.`;
 
-AVAILABLE COMPONENTS (Optimized for AR glasses):
-
-Layout:
-- Card: { title?: string, description?: string } - Container. Has children. NEVER use maxWidth - let it fill screen. Use for full-screen forms/dashboards.
-- Stack: { direction?: "horizontal"|"vertical", gap?: "sm"|"md" } - Flex container. Has children. Use vertical Stack to fill height.
-- Divider: {} - Horizontal separator
-
-Form Inputs (Compact):
-- Input: { label: string, name: string, type?: "text"|"email"|"password"|"number", placeholder?: string } - Text input. Label max 12 chars.
-- Button: { label: string, variant?: "primary"|"secondary"|"danger", actionText?: string } - Clickable button. Label MUST be under 12 chars.
-
-Typography:
-- Heading: { text: string, level?: 2|3|4 } - Heading text (h2-h4 only). Keep under 25 chars.
-- Text: { content: string, variant?: "body"|"caption"|"muted" } - Text. Keep very brief.
-
-Data Display (Simple):
-- Badge: { text: string, variant?: "default"|"success"|"warning"|"danger" } - Status badge. Max 10 chars.
-- Progress: { value: number, max?: number, label?: string } - Progress bar. Label max 12 chars.
-
-EXCLUDED COMPONENTS (too complex):
-- Grid, Image, Avatar, Rating, BarGraph, LineGraph, Textarea, Select, Checkbox, Radio, Switch, Alert, Link
-
-OUTPUT FORMAT (JSONL):
+const RULES_PROMPT = `OUTPUT FORMAT (JSONL):
 {"op":"set","path":"/root","value":"element-key"}
 {"op":"add","path":"/elements/key","value":{"key":"...","type":"...","props":{...},"children":[...]}}
 
@@ -52,6 +37,8 @@ FORBIDDEN CLASSES (NEVER USE):
 - min-h-screen, h-screen, min-h-full, h-full, min-h-dvh, h-dvh
 - bg-gray-50, bg-slate-50 or any page backgrounds
 - max-w-* classes that limit width
+- opacity-*, /10, /20, /50 modifiers (NO TRANSPARENCY)
+- backdrop-blur, bg-white/10 etc.
 
 AR GLASSES UI PATTERNS (FILL ENTIRE 540x180):
 - For login: Card (no maxWidth) with 2 inputs, 1 button - fills screen
@@ -76,6 +63,10 @@ EXAMPLE (Full-screen Status Dashboard):
 
 Generate JSONL:`;
 
+function generateSystemPrompt() {
+  return `${INTRO_PROMPT}\n\nAVAILABLE COMPONENTS:\n${generateCatalogPrompt(demoCatalog)}\n\nEXCLUDED COMPONENTS (too complex):\n- Grid, Image, Avatar, Rating, BarGraph, LineGraph, Textarea, Select, Checkbox, Radio, Switch, Alert, Link\n\n${RULES_PROMPT}`;
+}
+
 const MAX_PROMPT_LENGTH = 140;
 const DEFAULT_MODEL = "anthropic/claude-haiku-4.5";
 
@@ -86,7 +77,7 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: process.env.AI_GATEWAY_MODEL || DEFAULT_MODEL,
-    system: SYSTEM_PROMPT,
+    system: generateSystemPrompt(),
     prompt: sanitizedPrompt,
     temperature: 0.7,
   });

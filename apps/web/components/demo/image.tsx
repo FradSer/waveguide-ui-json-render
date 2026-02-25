@@ -17,7 +17,7 @@ export function Image({ element }: ComponentRenderProps) {
 
   return (
     <div
-      className={`bg-muted border border-border rounded flex items-center justify-center text-[10px] text-muted-foreground aspect-video ${baseClass} ${customClass}`}
+      className={`bg-black border border-[#003318] rounded flex items-center justify-center text-[10px] text-[#00AA44] aspect-video ${baseClass} ${customClass}`}
       style={imgStyle}
     >
       {(props.alt as string) || "img"}

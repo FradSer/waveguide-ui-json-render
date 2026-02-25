@@ -11,15 +11,15 @@ export function Switch({ element }: ComponentRenderProps) {
 
   return (
     <label
-      className={`flex items-center justify-between gap-2 text-xs cursor-pointer ${baseClass} ${customClass}`}
+      className={`flex items-center justify-between gap-2 text-xs cursor-pointer text-[#00FF66] ${baseClass} ${customClass}`}
       onClick={() => setChecked((prev) => !prev)}
     >
       <span>{props.label as string}</span>
       <div
-        className={`w-8 h-4 rounded-full relative transition-colors ${checked ? "bg-foreground" : "bg-border"}`}
+        className={`w-8 h-4 rounded-full relative transition-colors ${checked ? "bg-[#00FF66]" : "bg-[#003318] border border-[#00FF66]"}`}
       >
         <div
-          className={`absolute w-3 h-3 rounded-full bg-background top-0.5 transition-all ${checked ? "right-0.5" : "left-0.5"}`}
+          className={`absolute w-3 h-3 rounded-full bg-black top-0.5 transition-all ${checked ? "right-0.5" : "left-0.5"}`}
         />
       </div>
     </label>
