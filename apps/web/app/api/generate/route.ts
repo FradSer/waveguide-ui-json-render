@@ -1,4 +1,5 @@
 import { streamText } from "ai";
+import { vertexAnthropic } from "@ai-sdk/google-vertex/anthropic";
 import { generateCatalogPrompt } from "@json-render/core";
 import { demoCatalog } from "../../../lib/catalog";
 
@@ -68,7 +69,7 @@ function generateSystemPrompt() {
 }
 
 const MAX_PROMPT_LENGTH = 140;
-const DEFAULT_MODEL = "anthropic/claude-haiku-4.5";
+const DEFAULT_MODEL = "claude-3-haiku@20240307";
 
 export async function POST(req: Request) {
   const { prompt } = await req.json();
@@ -76,7 +77,7 @@ export async function POST(req: Request) {
   const sanitizedPrompt = String(prompt || "").slice(0, MAX_PROMPT_LENGTH);
 
   const result = streamText({
-    model: process.env.AI_GATEWAY_MODEL || DEFAULT_MODEL,
+    model: vertexAnthropic(process.env.GOOGLE_VERTEX_MODEL || DEFAULT_MODEL),
     system: generateSystemPrompt(),
     prompt: sanitizedPrompt,
     temperature: 0.7,

@@ -45,13 +45,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@json-render/core": "workspace:*"
+    "@ai-sdk/google-vertex": "^1.2.0",
+    "@json-render/core": "workspace:*",
+    "ai": "^6.0.99"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/react": "19.2.3",
-    "tsup": "^8.0.2",
-    "typescript": "^5.4.5"
+    "@types/react": "19.2.14",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "react": "^19.0.0"

@@ -41,11 +41,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@json-render/core": "workspace:*"
+    "@ai-sdk/gateway": "^3.0.55",
+    "@json-render/core": "workspace:*",
+    "ai": "^6.0.99"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "tsup": "^8.0.2",
-    "typescript": "^5.4.5"
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
   }
 }

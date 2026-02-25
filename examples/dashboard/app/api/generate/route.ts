@@ -1,4 +1,5 @@
 import { streamText } from "ai";
+import { vertexAnthropic } from "@ai-sdk/google-vertex/anthropic";
 import { componentList } from "@/lib/catalog";
 
 export const maxDuration = 30;
@@ -58,7 +59,7 @@ EXAMPLE - Revenue Dashboard:
 
 Generate JSONL patches now:`;
 
-const DEFAULT_MODEL = "anthropic/claude-haiku-4.5";
+const DEFAULT_MODEL = "claude-3-haiku@20240307";
 
 export async function POST(req: Request) {
   const { prompt, context } = await req.json();
@@ -71,7 +72,7 @@ export async function POST(req: Request) {
   }
 
   const result = streamText({
-    model: process.env.AI_GATEWAY_MODEL || DEFAULT_MODEL,
+    model: vertexAnthropic(process.env.GOOGLE_VERTEX_MODEL || DEFAULT_MODEL),
     system: SYSTEM_PROMPT,
     prompt: fullPrompt,
     temperature: 0.7,

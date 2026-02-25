@@ -1,7 +1,7 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
-  "globalEnv": ["AI_GATEWAY_MODEL"],
+  "globalEnv": ["GOOGLE_VERTEX_MODEL", "GOOGLE_VERTEX_PROJECT", "GOOGLE_VERTEX_LOCATION"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

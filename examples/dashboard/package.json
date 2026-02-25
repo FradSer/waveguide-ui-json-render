@@ -10,23 +10,23 @@
     "lint": "eslint --max-warnings 0"
   },
   "dependencies": {
-    "@ai-sdk/gateway": "^3.0.13",
-    "ai": "^6.0.33",
+    "@ai-sdk/gateway": "^3.0.55",
     "@json-render/codegen": "workspace:*",
     "@json-render/core": "workspace:*",
     "@json-render/react": "workspace:*",
-    "next": "16.1.1",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "shiki": "^3.0.0",
-    "zod": "^4.0.0"
+    "ai": "^6.0.99",
+    "next": "16.1.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "shiki": "^3.23.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
-    "@types/node": "^22.10.0",
-    "@types/react": "19.2.3",
+    "@types/node": "^25.3.0",
+    "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "eslint": "^9.39.1",
-    "typescript": "^5.7.2"
+    "eslint": "^10.0.2",
+    "typescript": "^5.9.3"
   }
 }
