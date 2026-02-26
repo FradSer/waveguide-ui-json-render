@@ -136,6 +136,7 @@ export function Demo() {
     clear,
   } = useUIStream({
     api: "/api/generate",
+    mode: "full",
     onError: (err: Error) => console.error("Generation error:", err),
   } as Parameters<typeof useUIStream>[0]);
 

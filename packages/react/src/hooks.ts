@@ -9,20 +9,18 @@ import { setByPath } from "@json-render/core";
  * Tries to find and parse a complete JSON object from the buffer
  */
 export function parsePartialJson(buffer: string): UITree | null {
-  const trimmed = buffer.trim();
-  if (!trimmed) {
+  let cleaned = buffer.trim();
+  if (!cleaned) {
     return null;
   }
 
+  // Remove markdown code blocks (```json ... ``` or ``` ... ```)
+  cleaned = cleaned.replace(/```json\n?/g, "").replace(/```\n?/g, "");
+
   // Try to parse directly first
   try {
-    const parsed = JSON.parse(trimmed);
-    if (
-      parsed &&
-      typeof parsed === "object" &&
-      "root" in parsed &&
-      "elements" in parsed
-    ) {
+    const parsed = JSON.parse(cleaned);
+    if (isValidUITree(parsed)) {
       return parsed as UITree;
     }
   } catch {
@@ -31,16 +29,11 @@ export function parsePartialJson(buffer: string): UITree | null {
 
   // Try to extract JSON from various formats
   // Match JSON object from within text (e.g., "data: {...}\n...")
-  const jsonMatch = trimmed.match(/\{[\s\S]*\}/);
+  const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
   if (jsonMatch) {
     try {
       const parsed = JSON.parse(jsonMatch[0]);
-      if (
-        parsed &&
-        typeof parsed === "object" &&
-        "root" in parsed &&
-        "elements" in parsed
-      ) {
+      if (isValidUITree(parsed)) {
         return parsed as UITree;
       }
     } catch {
@@ -49,6 +42,18 @@ export function parsePartialJson(buffer: string): UITree | null {
   }
 
   return null;
+}
+
+/**
+ * Check if parsed object is a valid UITree
+ */
+function isValidUITree(parsed: unknown): parsed is UITree {
+  return (
+    parsed !== null &&
+    typeof parsed === "object" &&
+    "root" in parsed &&
+    "elements" in parsed
+  );
 }
 
 /**
