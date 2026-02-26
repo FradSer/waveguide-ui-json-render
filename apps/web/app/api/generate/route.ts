@@ -1,8 +1,7 @@
-import { streamText, Output } from "ai";
+import { streamText } from "ai";
 import { createVertex } from "@ai-sdk/google-vertex";
 import { generateCatalogPrompt } from "@json-render/core";
 import { demoCatalog } from "../../../lib/catalog";
-import { uiTreeSchema } from "../../../lib/ui-schema";
 
 const vertex = createVertex({
   apiKey: process.env.GOOGLE_VERTEX_API_KEY,
@@ -137,9 +136,6 @@ export async function POST(req: Request) {
     system: generateSystemPrompt(),
     prompt: sanitizedPrompt,
     temperature: 0.7,
-    output: Output.object({
-      schema: uiTreeSchema,
-    }),
   });
 
   return result.toTextStreamResponse();
