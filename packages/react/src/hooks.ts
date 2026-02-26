@@ -5,6 +5,53 @@ import type { UITree, UIElement, JsonPatch } from "@json-render/core";
 import { setByPath } from "@json-render/core";
 
 /**
+ * Parse incomplete JSON from streaming response
+ * Tries to find and parse a complete JSON object from the buffer
+ */
+export function parsePartialJson(buffer: string): UITree | null {
+  const trimmed = buffer.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  // Try to parse directly first
+  try {
+    const parsed = JSON.parse(trimmed);
+    if (
+      parsed &&
+      typeof parsed === "object" &&
+      "root" in parsed &&
+      "elements" in parsed
+    ) {
+      return parsed as UITree;
+    }
+  } catch {
+    // Not valid JSON yet
+  }
+
+  // Try to extract JSON from various formats
+  // Match JSON object from within text (e.g., "data: {...}\n...")
+  const jsonMatch = trimmed.match(/\{[\s\S]*\}/);
+  if (jsonMatch) {
+    try {
+      const parsed = JSON.parse(jsonMatch[0]);
+      if (
+        parsed &&
+        typeof parsed === "object" &&
+        "root" in parsed &&
+        "elements" in parsed
+      ) {
+        return parsed as UITree;
+      }
+    } catch {
+      // Invalid JSON in match
+    }
+  }
+
+  return null;
+}
+
+/**
  * Parse a single JSON patch line
  */
 function parsePatchLine(line: string): JsonPatch | null {
@@ -83,6 +130,8 @@ function applyPatch(tree: UITree, patch: JsonPatch): UITree {
 export interface UseUIStreamOptions {
   /** API endpoint */
   api: string;
+  /** Response mode: 'patch' for JSONL (default), 'full' for complete JSON */
+  mode?: "patch" | "full";
   /** Callback when complete */
   onComplete?: (tree: UITree) => void;
   /** Callback on error */
@@ -101,6 +150,8 @@ export interface UseUIStreamReturn {
   error: Error | null;
   /** Send a prompt to generate UI */
   send: (prompt: string, context?: Record<string, unknown>) => Promise<void>;
+  /** Retry the last request */
+  retry: () => Promise<void>;
   /** Clear the current tree */
   clear: () => void;
 }
@@ -110,6 +161,7 @@ export interface UseUIStreamReturn {
  */
 export function useUIStream({
   api,
+  mode = "patch",
   onComplete,
   onError,
 }: UseUIStreamOptions): UseUIStreamReturn {
@@ -117,6 +169,10 @@ export function useUIStream({
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const lastRequestRef = useRef<{
+    prompt: string;
+    context?: Record<string, unknown>;
+  } | null>(null);
 
   const clear = useCallback(() => {
     setTree(null);
@@ -125,6 +181,9 @@ export function useUIStream({
 
   const send = useCallback(
     async (prompt: string, context?: Record<string, unknown>) => {
+      // Store for retry
+      lastRequestRef.current = { prompt, context };
+
       // Abort any existing request
       abortControllerRef.current?.abort();
       abortControllerRef.current = new AbortController();
@@ -160,31 +219,56 @@ export function useUIStream({
         const decoder = new TextDecoder();
         let buffer = "";
 
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
+        if (mode === "full") {
+          // Full JSON mode: accumulate and parse complete JSON
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
 
-          buffer += decoder.decode(value, { stream: true });
+            buffer += decoder.decode(value, { stream: true });
 
-          // Process complete lines
-          const lines = buffer.split("\n");
-          buffer = lines.pop() ?? "";
+            // Try to parse the complete JSON
+            const parsed = parsePartialJson(buffer);
+            if (parsed) {
+              currentTree = parsed;
+              setTree({ ...currentTree });
+            }
+          }
 
-          for (const line of lines) {
-            const patch = parsePatchLine(line);
+          // Final attempt to parse
+          const final = parsePartialJson(buffer);
+          if (final) {
+            currentTree = final;
+            setTree({ ...currentTree });
+          }
+        } else {
+          // Patch mode: process JSONL lines
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+
+            // Process complete lines
+            const lines = buffer.split("\n");
+            buffer = lines.pop() ?? "";
+
+            for (const line of lines) {
+              const patch = parsePatchLine(line);
+              if (patch) {
+                currentTree = applyPatch(currentTree, patch);
+                setTree({ ...currentTree });
+              }
+            }
+          }
+
+          // Process any remaining buffer
+          if (buffer.trim()) {
+            const patch = parsePatchLine(buffer);
             if (patch) {
               currentTree = applyPatch(currentTree, patch);
               setTree({ ...currentTree });
             }
-          }
-        }
-
-        // Process any remaining buffer
-        if (buffer.trim()) {
-          const patch = parsePatchLine(buffer);
-          if (patch) {
-            currentTree = applyPatch(currentTree, patch);
-            setTree({ ...currentTree });
           }
         }
 
@@ -200,8 +284,17 @@ export function useUIStream({
         setIsStreaming(false);
       }
     },
-    [api, onComplete, onError],
+    [api, mode, onComplete, onError],
   );
+
+  // Retry function - calls the last request again
+  const retry = useCallback(async () => {
+    if (!lastRequestRef.current) {
+      return;
+    }
+    const { prompt, context } = lastRequestRef.current;
+    await send(prompt, context);
+  }, [send]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -215,6 +308,7 @@ export function useUIStream({
     isStreaming,
     error,
     send,
+    retry,
     clear,
   };
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { flatToTree } from "./hooks";
+import { flatToTree, parsePartialJson } from "./hooks";
 
 describe("flatToTree", () => {
   it("converts array of elements to tree structure", () => {
@@ -147,5 +147,53 @@ describe("flatToTree", () => {
 
     expect(tree.elements["parent"].children).toHaveLength(4);
     expect(tree.elements["parent"].children).toEqual(["a", "b", "c", "d"]);
+  });
+});
+
+describe("parsePartialJson", () => {
+  it("parses complete JSON correctly", () => {
+    const json =
+      '{"root":"card","elements":{"card":{"key":"card","type":"Card","props":{}}}}';
+    const result = parsePartialJson(json);
+    expect(result).not.toBeNull();
+    expect(result?.root).toBe("card");
+  });
+
+  it("returns null for incomplete JSON", () => {
+    const json = '{"root":"card","elements":';
+    const result = parsePartialJson(json);
+    expect(result).toBeNull();
+  });
+
+  it("returns null for invalid JSON", () => {
+    const json = "not json at all";
+    const result = parsePartialJson(json);
+    expect(result).toBeNull();
+  });
+
+  it("handles empty string", () => {
+    const result = parsePartialJson("");
+    expect(result).toBeNull();
+  });
+
+  it("handles JSON with trailing text", () => {
+    const json = '{"root":"card","elements":{}} extra text';
+    const result = parsePartialJson(json);
+    expect(result).not.toBeNull();
+    expect(result?.root).toBe("card");
+  });
+
+  it("handles whitespace around JSON", () => {
+    const json = '  {"root":"card","elements":{}}  ';
+    const result = parsePartialJson(json);
+    expect(result).not.toBeNull();
+    expect(result?.root).toBe("card");
+  });
+
+  it("extracts JSON from stream with prefix", () => {
+    const streamData = 'data: {"root":"card","elements":{}}\n\nmore data';
+    const result = parsePartialJson(streamData);
+    expect(result).not.toBeNull();
+    expect(result?.root).toBe("card");
   });
 });

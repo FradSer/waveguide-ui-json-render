@@ -1,7 +1,8 @@
-import { streamText } from "ai";
+import { streamText, Output } from "ai";
 import { createVertex } from "@ai-sdk/google-vertex";
 import { generateCatalogPrompt } from "@json-render/core";
 import { demoCatalog } from "../../../lib/catalog";
+import { uiTreeSchema } from "../../../lib/ui-schema";
 
 const vertex = createVertex({
   apiKey: process.env.GOOGLE_VERTEX_API_KEY,
@@ -9,14 +10,14 @@ const vertex = createVertex({
 
 export const maxDuration = 30;
 
-const INTRO_PROMPT = `You are a UI generator for AR glasses with a 540x180 pixel display that outputs JSONL (JSON Lines) patches.
+const INTRO_PROMPT = `You are a UI generator for AR glasses with a 540x180 pixel display.
 
 CRITICAL DISPLAY CONSTRAINTS:
 - Fixed viewport: 540px wide × 180px tall (every pixel counts!)
 - UI MUST fill the entire 540x180 space - DO NOT center or add margins
-- Maximum 2-3 UI elements at once
+- Maximum 5 UI elements at once
 - Vertical layouts preferred - maximize use of 180px height
-- Text limits: Button labels max 12 chars, Headings max 25 chars
+- Text limits: Button labels max 12 chars, Headings max 25 chars, Badges max 10 chars
 - Keep content minimal and essential only
 - COLOR PALETTE: Pure Green (#00FF66) on Black background ONLY
 - NO TRANSPARENCY: Opacity must be 1.0 for all elements. DO NOT use alpha channels.
@@ -24,19 +25,27 @@ CRITICAL DISPLAY CONSTRAINTS:
 - NO EMOJIS: Do not use emojis (e.g. 🚀, ⚠️) in any text.
 - ICONS: Use simple ASCII/text symbols for icons (e.g. [+], [x], >, <, !, ?) which look great in the pixel font.`;
 
-const RULES_PROMPT = `OUTPUT FORMAT (JSONL):
-{"op":"set","path":"/root","value":"element-key"}
-{"op":"add","path":"/elements/key","value":{"key":"...","type":"...","props":{...},"children":[...]}}
+const OUTPUT_PROMPT = `OUTPUT FORMAT:
+Output a complete JSON object with the following structure:
+{
+  "root": "element-key",
+  "elements": {
+    "element-key": {
+      "key": "element-key",
+      "type": "ComponentType",
+      "props": { ... },
+      "children": ["child-key-1", "child-key-2"]
+    }
+  }
+}
 
-ALL COMPONENTS support: className?: string[] - array of Tailwind classes
+COMPONENT TYPES: Card, Stack, Input, Button, Heading, Text, Badge, Progress, Divider
 
 RULES:
-1. First line sets /root to root element key
-2. Add elements with /elements/{key}
-3. Children array contains string keys, not objects
-4. Parent first, then children
-5. Each element needs: key, type, props
-6. NEVER use maxWidth in Card props - let UI fill entire screen
+1. root must be the key of the root element
+2. Every element needs: key, type, props
+3. Children array contains string keys (not objects)
+4. NEVER use maxWidth in Card props - let UI fill entire screen
 
 FORBIDDEN CLASSES (NEVER USE):
 - min-h-screen, h-screen, min-h-full, h-full, min-h-dvh, h-dvh
@@ -46,30 +55,73 @@ FORBIDDEN CLASSES (NEVER USE):
 - backdrop-blur, bg-white/10 etc.
 
 AR GLASSES UI PATTERNS (FILL ENTIRE 540x180):
-- For login: Card (no maxWidth) with 2 inputs, 1 button - fills screen
+- For login: Card with 2 inputs, 1 button - fills screen
 - For status: Stack vertical with Heading + Badge/Progress - fills height
 - For dashboard: Stack vertical with 2-3 Badges/Progress items - uses full space
 - For menu: Stack vertical with 3-4 Text items - maximizes vertical space
 - ALWAYS use vertical Stack as root to fill 180px height
 - NO centered layouts - use full width and height
 
-EXAMPLE (Full-screen Login):
-{"op":"set","path":"/root","value":"login"}
-{"op":"add","path":"/elements/login","value":{"key":"login","type":"Card","props":{"title":"Sign In"},"children":["email","submit"]}}
-{"op":"add","path":"/elements/email","value":{"key":"email","type":"Input","props":{"label":"Email","name":"email","type":"email"}}}
-{"op":"add","path":"/elements/submit","value":{"key":"submit","type":"Button","props":{"label":"Sign In","variant":"primary"}}}
+EXAMPLE (Login Form):
+{
+  "root": "login-card",
+  "elements": {
+    "login-card": {
+      "key": "login-card",
+      "type": "Card",
+      "props": { "title": "Sign In" },
+      "children": ["email-input", "password-input", "submit-btn"]
+    },
+    "email-input": {
+      "key": "email-input",
+      "type": "Input",
+      "props": { "label": "Email", "name": "email", "type": "email" }
+    },
+    "password-input": {
+      "key": "password-input",
+      "type": "Input",
+      "props": { "label": "Pass", "name": "password", "type": "password" }
+    },
+    "submit-btn": {
+      "key": "submit-btn",
+      "type": "Button",
+      "props": { "label": "Sign In", "variant": "primary" }
+    }
+  }
+}
 
-EXAMPLE (Full-screen Status Dashboard):
-{"op":"set","path":"/root","value":"dashboard"}
-{"op":"add","path":"/elements/dashboard","value":{"key":"dashboard","type":"Stack","props":{"direction":"vertical","gap":"md"},"children":["header","status","progress"]}}
-{"op":"add","path":"/elements/header","value":{"key":"header","type":"Heading","props":{"text":"System Status","level":2}}}
-{"op":"add","path":"/elements/status","value":{"key":"status","type":"Badge","props":{"text":"Online","variant":"success"}}}
-{"op":"add","path":"/elements/progress","value":{"key":"progress","type":"Progress","props":{"value":75,"label":"Battery"}}}
+EXAMPLE (Status Dashboard):
+{
+  "root": "dashboard",
+  "elements": {
+    "dashboard": {
+      "key": "dashboard",
+      "type": "Stack",
+      "props": { "direction": "vertical", "gap": "md" },
+      "children": ["header", "status-badge", "progress-bar"]
+    },
+    "header": {
+      "key": "header",
+      "type": "Heading",
+      "props": { "text": "System Status", "level": 2 }
+    },
+    "status-badge": {
+      "key": "status-badge",
+      "type": "Badge",
+      "props": { "text": "Online", "variant": "success" }
+    },
+    "progress-bar": {
+      "key": "progress-bar",
+      "type": "Progress",
+      "props": { "value": 75, "label": "Battery" }
+    }
+  }
+}
 
-Generate JSONL:`;
+Generate the JSON now:`;
 
 function generateSystemPrompt() {
-  return `${INTRO_PROMPT}\n\nAVAILABLE COMPONENTS:\n${generateCatalogPrompt(demoCatalog)}\n\nEXCLUDED COMPONENTS (too complex):\n- Grid, Image, Avatar, Rating, BarGraph, LineGraph, Textarea, Select, Checkbox, Radio, Switch, Alert, Link\n\n${RULES_PROMPT}`;
+  return `${INTRO_PROMPT}\n\nAVAILABLE COMPONENTS:\n${generateCatalogPrompt(demoCatalog)}\n\nEXCLUDED COMPONENTS (too complex):\n- Grid, Image, Avatar, Rating, BarGraph, LineGraph, Textarea, Select, Checkbox, Radio, Switch, Alert, Link\n\n${OUTPUT_PROMPT}`;
 }
 
 const MAX_PROMPT_LENGTH = 140;
@@ -85,6 +137,9 @@ export async function POST(req: Request) {
     system: generateSystemPrompt(),
     prompt: sanitizedPrompt,
     temperature: 0.7,
+    output: Output.object({
+      schema: uiTreeSchema,
+    }),
   });
 
   return result.toTextStreamResponse();
