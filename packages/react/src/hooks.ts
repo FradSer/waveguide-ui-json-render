@@ -144,7 +144,9 @@ export interface UseUIStreamOptions {
 export interface UseUIStreamReturn {
   /** Current UI tree */
   tree: UITree | null;
-  /** Whether currently streaming */
+  /** Whether currently waiting for first response (thinking) */
+  isThinking: boolean;
+  /** Whether currently streaming data */
   isStreaming: boolean;
   /** Error if any */
   error: Error | null;
@@ -166,9 +168,11 @@ export function useUIStream({
   onError,
 }: UseUIStreamOptions): UseUIStreamReturn {
   const [tree, setTree] = useState<UITree | null>(null);
+  const [isThinking, setIsThinking] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const hasReceivedDataRef = useRef(false);
   const lastRequestRef = useRef<{
     prompt: string;
     context?: Record<string, unknown>;
@@ -188,8 +192,10 @@ export function useUIStream({
       abortControllerRef.current?.abort();
       abortControllerRef.current = new AbortController();
 
+      setIsThinking(true);
       setIsStreaming(true);
       setError(null);
+      hasReceivedDataRef.current = false;
 
       // Start with an empty tree
       let currentTree: UITree = { root: "", elements: {} };
@@ -229,7 +235,12 @@ export function useUIStream({
 
             // Try to parse the complete JSON
             const parsed = parsePartialJson(buffer);
-            if (parsed) {
+            if (parsed && !hasReceivedDataRef.current) {
+              hasReceivedDataRef.current = true;
+              setIsThinking(false);
+              currentTree = parsed;
+              setTree({ ...currentTree });
+            } else if (parsed) {
               currentTree = parsed;
               setTree({ ...currentTree });
             }
@@ -256,6 +267,10 @@ export function useUIStream({
             for (const line of lines) {
               const patch = parsePatchLine(line);
               if (patch) {
+                if (!hasReceivedDataRef.current) {
+                  hasReceivedDataRef.current = true;
+                  setIsThinking(false);
+                }
                 currentTree = applyPatch(currentTree, patch);
                 setTree({ ...currentTree });
               }
@@ -266,6 +281,10 @@ export function useUIStream({
           if (buffer.trim()) {
             const patch = parsePatchLine(buffer);
             if (patch) {
+              if (!hasReceivedDataRef.current) {
+                hasReceivedDataRef.current = true;
+                setIsThinking(false);
+              }
               currentTree = applyPatch(currentTree, patch);
               setTree({ ...currentTree });
             }
@@ -281,6 +300,7 @@ export function useUIStream({
         setError(error);
         onError?.(error);
       } finally {
+        setIsThinking(false);
         setIsStreaming(false);
       }
     },
@@ -305,6 +325,7 @@ export function useUIStream({
 
   return {
     tree,
+    isThinking,
     isStreaming,
     error,
     send,
